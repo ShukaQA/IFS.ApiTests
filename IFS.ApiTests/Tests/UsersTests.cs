@@ -53,7 +53,9 @@ namespace IFS.ApiTests.Tests
             var response = ApiClient.Get<List<User>>("/users");
 
             response.Data.Should().NotBeNull();
-            foreach (var user in response.Data)
+            if (response.Data == null) Assert.Fail("Response data is null");
+
+            foreach (var user in response.Data!)
             {
                 user.Id.Should().BeGreaterThan(0, "each user must have a valid Id");
                 user.Name.Should().NotBeNullOrWhiteSpace("each user must have a Name");
@@ -76,7 +78,7 @@ namespace IFS.ApiTests.Tests
             response.StatusCode.Should().Be(HttpStatusCode.OK,
                 $"GET /users/{userId} should return 200 OK");
             response.Data.Should().NotBeNull();
-            response.Data.Id.Should().Be(userId,
+            response.Data!.Id.Should().Be(userId,
                 $"response should return user with Id {userId}");
         }
 
@@ -121,7 +123,7 @@ namespace IFS.ApiTests.Tests
             response.StatusCode.Should().Be(HttpStatusCode.OK,
                 "GET /users/1/posts should return 200 OK");
             response.Data.Should().NotBeNull();
-            response.Data.Should().NotBeEmpty(
+            response.Data!.Should().NotBeEmpty(
                 "user 1 should have at least one post");
         }
     }

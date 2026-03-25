@@ -16,8 +16,6 @@ namespace IFS.ApiTests.Tests
     {
         private const int MaxResponseTimeMs = 3000;
 
-        // ── GET /posts ──────────────────────────────────────────────
-
         [Test]
         [AllureTag("smoke")]
         [AllureSeverity(SeverityLevel.critical)]
@@ -55,7 +53,9 @@ namespace IFS.ApiTests.Tests
             var response = ApiClient.Get<List<Post>>("/posts");
 
             response.Data.Should().NotBeNull();
-            foreach (var post in response.Data)
+            if (response.Data == null) Assert.Fail("Response data is null");
+
+            foreach (var post in response.Data!)
             {
                 post.Id.Should().BeGreaterThan(0, "each post must have a valid Id");
                 post.UserId.Should().BeGreaterThan(0, "each post must have a valid UserId");
@@ -80,8 +80,6 @@ namespace IFS.ApiTests.Tests
                 $"response time should be under {MaxResponseTimeMs}ms");
         }
 
-        // ── GET /posts/{id} ─────────────────────────────────────────
-
         [TestCase(1)]
         [TestCase(50)]
         [TestCase(100)]
@@ -96,7 +94,7 @@ namespace IFS.ApiTests.Tests
             response.StatusCode.Should().Be(HttpStatusCode.OK,
                 $"GET /posts/{postId} should return 200 OK");
             response.Data.Should().NotBeNull();
-            response.Data.Id.Should().Be(postId,
+            response.Data!.Id.Should().Be(postId,
                 $"response should return post with Id {postId}");
         }
 
@@ -114,8 +112,6 @@ namespace IFS.ApiTests.Tests
             response.StatusCode.Should().Be(HttpStatusCode.NotFound,
                 $"GET /posts/{postId} should return 404 for non-existent post");
         }
-
-        // ── POST /posts ─────────────────────────────────────────────
 
         [Test]
         [AllureTag("smoke")]
@@ -144,17 +140,15 @@ namespace IFS.ApiTests.Tests
             var response = ApiClient.Post<Post>("/posts", newPost);
 
             response.Data.Should().NotBeNull();
-            response.Data.Title.Should().Be(newPost.Title,
+            response.Data!.Title.Should().Be(newPost.Title,
                 "response should echo back the submitted title");
-            response.Data.Body.Should().Be(newPost.Body,
+            response.Data!.Body.Should().Be(newPost.Body,
                 "response should echo back the submitted body");
-            response.Data.UserId.Should().Be(newPost.UserId,
+            response.Data!.UserId.Should().Be(newPost.UserId,
                 "response should echo back the submitted userId");
-            response.Data.Id.Should().BeGreaterThan(0,
+            response.Data!.Id.Should().BeGreaterThan(0,
                 "created post should have an assigned Id");
         }
-
-        // ── PUT /posts/{id} ─────────────────────────────────────────
 
         [Test]
         [AllureTag("regression")]
@@ -175,13 +169,11 @@ namespace IFS.ApiTests.Tests
 
             response.StatusCode.Should().Be(HttpStatusCode.OK,
                 "PUT /posts/1 should return 200 OK");
-            response.Data.Title.Should().Be(updatedPost.Title,
+            response.Data!.Title.Should().Be(updatedPost.Title,
                 "response should reflect updated title");
-            response.Data.Body.Should().Be(updatedPost.Body,
+            response.Data!.Body.Should().Be(updatedPost.Body,
                 "response should reflect updated body");
         }
-
-        // ── DELETE /posts/{id} ──────────────────────────────────────
 
         [Test]
         [AllureTag("smoke")]
@@ -195,8 +187,6 @@ namespace IFS.ApiTests.Tests
             response.StatusCode.Should().Be(HttpStatusCode.OK,
                 "DELETE /posts/1 should return 200 OK");
         }
-
-        // ── NESTED RESOURCE ─────────────────────────────────────────
 
         [Test]
         [AllureTag("regression")]

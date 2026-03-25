@@ -29,20 +29,20 @@ namespace IFS.ApiTests.Clients
             _client = new RestClient(options);
         }
 
-        public RestResponse<T> Get<T>(string endpoint)
+        public RestResponse<T> Get<T>(string endpoint) where T : notnull
         {
             var request = new RestRequest(endpoint, Method.Get);
             return ExecuteWithRetry<T>(request);
         }
 
-        public RestResponse<T> Post<T>(string endpoint, object body)
+        public RestResponse<T> Post<T>(string endpoint, object body) where T : notnull
         {
             var request = new RestRequest(endpoint, Method.Post);
             request.AddJsonBody(body);
             return ExecuteWithRetry<T>(request);
         }
 
-        public RestResponse<T> Put<T>(string endpoint, object body)
+        public RestResponse<T> Put<T>(string endpoint, object body) where T : notnull
         {
             var request = new RestRequest(endpoint, Method.Put);
             request.AddJsonBody(body);
@@ -58,7 +58,7 @@ namespace IFS.ApiTests.Clients
             return response;
         }
 
-        private RestResponse<T> ExecuteWithRetry<T>(RestRequest request, int retries = DefaultRetries)
+        private RestResponse<T> ExecuteWithRetry<T>(RestRequest request, int retries = DefaultRetries) where T : notnull
         {
             for (int attempt = 1; attempt <= retries; attempt++)
             {
@@ -73,7 +73,6 @@ namespace IFS.ApiTests.Clients
                 Thread.Sleep(RetryDelayMs);
             }
 
-            // Final attempt
             TestLogger.LogRequest(request);
             var finalResponse = _client.Execute<T>(request);
             TestLogger.LogResponse(finalResponse);
