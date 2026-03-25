@@ -1,8 +1,11 @@
-﻿using IFS.ApiTests.Clients;
+﻿using Allure.NUnit;
+using Allure.NUnit.Attributes;
+using IFS.ApiTests.Clients;
 using NUnit.Framework;
 
 namespace IFS.ApiTests.Helpers
 {
+    [AllureNUnit]
     public abstract class BaseTest
     {
         protected ApiClient ApiClient;

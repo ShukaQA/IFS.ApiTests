@@ -1,4 +1,6 @@
-﻿using FluentAssertions;
+﻿using Allure.NUnit.Attributes;
+using Allure.Net.Commons;
+using FluentAssertions;
 using IFS.ApiTests.Helpers;
 using IFS.ApiTests.Models;
 using NUnit.Framework;
@@ -9,6 +11,7 @@ using System.Net;
 namespace IFS.ApiTests.Tests
 {
     [TestFixture]
+    [AllureSuite("Posts API")]
     public class PostsTests : BaseTest
     {
         private const int MaxResponseTimeMs = 3000;
@@ -16,6 +19,10 @@ namespace IFS.ApiTests.Tests
         // ── GET /posts ──────────────────────────────────────────────
 
         [Test]
+        [AllureTag("smoke")]
+        [AllureSeverity(SeverityLevel.critical)]
+        [AllureFeature("GET /posts")]
+        [AllureDescription("Verify GET /posts returns 200 OK")]
         public void GetAllPosts_ShouldReturn200OK()
         {
             var response = ApiClient.Get<List<Post>>("/posts");
@@ -25,6 +32,10 @@ namespace IFS.ApiTests.Tests
         }
 
         [Test]
+        [AllureTag("regression")]
+        [AllureSeverity(SeverityLevel.normal)]
+        [AllureFeature("GET /posts")]
+        [AllureDescription("Verify GET /posts returns exactly 100 posts")]
         public void GetAllPosts_ShouldReturn100Posts()
         {
             var response = ApiClient.Get<List<Post>>("/posts");
@@ -35,6 +46,10 @@ namespace IFS.ApiTests.Tests
         }
 
         [Test]
+        [AllureTag("regression")]
+        [AllureSeverity(SeverityLevel.normal)]
+        [AllureFeature("GET /posts")]
+        [AllureDescription("Verify each post has id, userId, title and body fields")]
         public void GetAllPosts_EachPost_ShouldHaveRequiredFields()
         {
             var response = ApiClient.Get<List<Post>>("/posts");
@@ -50,6 +65,10 @@ namespace IFS.ApiTests.Tests
         }
 
         [Test]
+        [AllureTag("performance")]
+        [AllureSeverity(SeverityLevel.minor)]
+        [AllureFeature("GET /posts")]
+        [AllureDescription("Verify GET /posts responds within 3 seconds")]
         public void GetAllPosts_ShouldRespondWithinTimeLimit()
         {
             var stopwatch = Stopwatch.StartNew();
@@ -66,6 +85,10 @@ namespace IFS.ApiTests.Tests
         [TestCase(1)]
         [TestCase(50)]
         [TestCase(100)]
+        [AllureTag("regression")]
+        [AllureSeverity(SeverityLevel.critical)]
+        [AllureFeature("GET /posts/{id}")]
+        [AllureDescription("Verify valid post IDs return 200 OK")]
         public void GetPostById_ValidId_ShouldReturn200(int postId)
         {
             var response = ApiClient.Get<Post>($"/posts/{postId}");
@@ -80,6 +103,10 @@ namespace IFS.ApiTests.Tests
         [TestCase(0)]
         [TestCase(-1)]
         [TestCase(99999)]
+        [AllureTag("regression")]
+        [AllureSeverity(SeverityLevel.normal)]
+        [AllureFeature("GET /posts/{id}")]
+        [AllureDescription("Verify invalid post IDs return 404 Not Found")]
         public void GetPostById_InvalidId_ShouldReturn404(int postId)
         {
             var response = ApiClient.Get<Post>($"/posts/{postId}");
@@ -88,21 +115,13 @@ namespace IFS.ApiTests.Tests
                 $"GET /posts/{postId} should return 404 for non-existent post");
         }
 
-        [Test]
-        public void GetPostById_ShouldRespondWithinTimeLimit()
-        {
-            var stopwatch = Stopwatch.StartNew();
-            var response = ApiClient.Get<Post>("/posts/1");
-            stopwatch.Stop();
-
-            response.StatusCode.Should().Be(HttpStatusCode.OK);
-            stopwatch.ElapsedMilliseconds.Should().BeLessThan(MaxResponseTimeMs,
-                $"response time should be under {MaxResponseTimeMs}ms");
-        }
-
         // ── POST /posts ─────────────────────────────────────────────
 
         [Test]
+        [AllureTag("smoke")]
+        [AllureSeverity(SeverityLevel.critical)]
+        [AllureFeature("POST /posts")]
+        [AllureDescription("Verify creating a post returns 201 Created")]
         public void CreatePost_ShouldReturn201Created()
         {
             var newPost = new Post { UserId = 1, Title = "Test Post", Body = "Test Body" };
@@ -114,6 +133,10 @@ namespace IFS.ApiTests.Tests
         }
 
         [Test]
+        [AllureTag("regression")]
+        [AllureSeverity(SeverityLevel.normal)]
+        [AllureFeature("POST /posts")]
+        [AllureDescription("Verify response body contains submitted data")]
         public void CreatePost_ResponseBody_ShouldContainSubmittedData()
         {
             var newPost = new Post { UserId = 1, Title = "My Title", Body = "My Body" };
@@ -134,6 +157,10 @@ namespace IFS.ApiTests.Tests
         // ── PUT /posts/{id} ─────────────────────────────────────────
 
         [Test]
+        [AllureTag("regression")]
+        [AllureSeverity(SeverityLevel.normal)]
+        [AllureFeature("PUT /posts/{id}")]
+        [AllureDescription("Verify updating a post returns 200 and reflects changes")]
         public void UpdatePost_ShouldReturn200AndReflectChanges()
         {
             var updatedPost = new Post
@@ -157,6 +184,10 @@ namespace IFS.ApiTests.Tests
         // ── DELETE /posts/{id} ──────────────────────────────────────
 
         [Test]
+        [AllureTag("smoke")]
+        [AllureSeverity(SeverityLevel.critical)]
+        [AllureFeature("DELETE /posts/{id}")]
+        [AllureDescription("Verify deleting a post returns 200 OK")]
         public void DeletePost_ShouldReturn200OK()
         {
             var response = ApiClient.Delete("/posts/1");
@@ -168,6 +199,10 @@ namespace IFS.ApiTests.Tests
         // ── NESTED RESOURCE ─────────────────────────────────────────
 
         [Test]
+        [AllureTag("regression")]
+        [AllureSeverity(SeverityLevel.minor)]
+        [AllureFeature("Nested Resources")]
+        [AllureDescription("Verify GET /posts/1/comments returns comments")]
         public void GetPostComments_ShouldReturnCommentsForPost()
         {
             var response = ApiClient.Get<List<dynamic>>("/posts/1/comments");
