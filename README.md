@@ -11,16 +11,12 @@ Automated API test suite for the [JSONPlaceholder](https://jsonplaceholder.typic
 - RestSharp
 - FluentAssertions 6.12.0
 - Allure Reports
-- GitHub Actions (CI/CD)
 
 ---
 
 ## Project Structure
 ```
 IFS.ApiTests/
-├── .github/
-│   └── workflows/
-│       └── tests.yml         # CI/CD pipeline
 ├── IFS.ApiTests/
 │   ├── Clients/
 │   │   └── ApiClient.cs      # HTTP client wrapper with retry logic
@@ -50,7 +46,6 @@ IFS.ApiTests/
 - ✅ **Data-driven tests** — `[TestCase]` for multiple inputs per test
 - ✅ **Response time validation** — all endpoints tested under 3 seconds
 - ✅ **Allure Reports** — rich HTML reports with suite, feature, severity and tag annotations
-- ✅ **CI/CD** — GitHub Actions runs tests on every push and pull request
 - ✅ **Configurable** — base URL and timeout managed via `appsettings.json`
 
 ---
@@ -112,11 +107,6 @@ dotnet test
 allure serve IFS.ApiTests/bin/Debug/net8.0/allure-results
 ```
 
-### Online report (GitHub Pages)
-```
-https://shukaqa.github.io/IFS.ApiTests/
-```
-
 ---
 
 ## Test Coverage
@@ -137,13 +127,3 @@ https://shukaqa.github.io/IFS.ApiTests/
 | GET | `/users` | 200 OK, exactly 10 users, required fields, response time |
 | GET | `/users/{id}` | Valid IDs (1, 5, 10), non-existent ID returns 404 |
 | GET | `/users/1/posts` | Nested resource returns posts for user |
-
----
-
-## CI/CD
-
-Tests run automatically on every push and pull request via GitHub Actions.
-
-- View runs: [GitHub Actions](https://github.com/ShukaQA/IFS.ApiTests/actions)
-- Test results uploaded as artifacts after each run
-- Allure report published to GitHub Pages automatically
