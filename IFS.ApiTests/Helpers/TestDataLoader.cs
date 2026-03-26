@@ -2,7 +2,7 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace IFS.ApiTests.TestData
+namespace IFS.ApiTests.Helpers
 {
     public static class TestDataLoader
     {
