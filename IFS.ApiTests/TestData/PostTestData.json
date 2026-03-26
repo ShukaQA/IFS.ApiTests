@@ -1,0 +1,20 @@
+{
+  "validPostIds": [ 1, 50, 100 ],
+  "invalidPostIds": [ 0, -1, 99999 ],
+  "validNewPost": {
+    "userId": 1,
+    "title": "Test Post Title",
+    "body": "Test Post Body"
+  },
+  "updatedPost": {
+    "id": 1,
+    "userId": 1,
+    "title": "Updated Title",
+    "body": "Updated Body"
+  },
+  "emptyTitlePost": {
+    "userId": 1,
+    "title": "",
+    "body": "Some Body"
+  }
+}

@@ -1,0 +1,4 @@
+{
+  "validUserIds": [ 1, 5, 10 ],
+  "invalidUserIds": [ 0, -1, 99999 ]
+}

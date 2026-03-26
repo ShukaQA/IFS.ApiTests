@@ -3,8 +3,9 @@ using Allure.NUnit.Attributes;
 using FluentAssertions;
 using IFS.ApiTests.Helpers;
 using IFS.ApiTests.Models;
-using IFS.ApiTests.Tests.Posts;
+using IFS.ApiTests.TestData;
 using NUnit.Framework;
+using System.Collections.Generic;
 using System.Net;
 
 namespace IFS.ApiTests.Tests.Users
@@ -26,8 +27,7 @@ namespace IFS.ApiTests.Tests.Users
                 "non-existent user should return 404");
         }
 
-        [TestCase(0)]
-        [TestCase(-1)]
+        [TestCaseSource(typeof(TestDataLoader.Users), nameof(TestDataLoader.Users.InvalidUserIds))]
         [AllureTag("negative")]
         [AllureSeverity(SeverityLevel.normal)]
         [AllureDescription("Verify invalid user IDs return 404")]
@@ -49,7 +49,8 @@ namespace IFS.ApiTests.Tests.Users
 
             var isEmptyOrNotFound =
                 response.StatusCode == HttpStatusCode.NotFound ||
-                (response.StatusCode == HttpStatusCode.OK && (response.Data == null || response.Data.Count == 0));
+                (response.StatusCode == HttpStatusCode.OK &&
+                (response.Data == null || response.Data.Count == 0));
 
             isEmptyOrNotFound.Should().BeTrue(
                 "non-existent user should return 404 or empty posts list");

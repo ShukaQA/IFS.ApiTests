@@ -3,6 +3,7 @@ using Allure.NUnit.Attributes;
 using FluentAssertions;
 using IFS.ApiTests.Helpers;
 using IFS.ApiTests.Models;
+using IFS.ApiTests.TestData;
 using NUnit.Framework;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -75,9 +76,7 @@ namespace IFS.ApiTests.Tests.Posts
                 $"response time should be under {MaxResponseTimeMs}ms");
         }
 
-        [TestCase(1)]
-        [TestCase(50)]
-        [TestCase(100)]
+        [TestCaseSource(typeof(TestDataLoader.Posts), nameof(TestDataLoader.Posts.ValidPostIds))]
         [AllureTag("regression")]
         [AllureSeverity(SeverityLevel.critical)]
         [AllureDescription("Verify valid post IDs return 200 OK with correct data")]
@@ -98,9 +97,7 @@ namespace IFS.ApiTests.Tests.Posts
         [AllureDescription("Verify creating a post returns 201 Created")]
         public void CreatePost_ShouldReturn201Created()
         {
-            var newPost = new Post { UserId = 1, Title = "Test Post", Body = "Test Body" };
-
-            var response = ApiClient.Post<Post>("/posts", newPost);
+            var response = ApiClient.Post<Post>("/posts", TestDataLoader.Posts.ValidNewPost);
 
             response.StatusCode.Should().Be(HttpStatusCode.Created,
                 "creating a post should return 201 Created");
@@ -112,8 +109,7 @@ namespace IFS.ApiTests.Tests.Posts
         [AllureDescription("Verify response body contains submitted data")]
         public void CreatePost_ResponseBody_ShouldContainSubmittedData()
         {
-            var newPost = new Post { UserId = 1, Title = "My Title", Body = "My Body" };
-
+            var newPost = TestDataLoader.Posts.ValidNewPost;
             var response = ApiClient.Post<Post>("/posts", newPost);
 
             response.Data.Should().NotBeNull();
@@ -133,14 +129,7 @@ namespace IFS.ApiTests.Tests.Posts
         [AllureDescription("Verify updating a post returns 200 and reflects changes")]
         public void UpdatePost_ShouldReturn200AndReflectChanges()
         {
-            var updatedPost = new Post
-            {
-                Id = 1,
-                UserId = 1,
-                Title = "Updated Title",
-                Body = "Updated Body"
-            };
-
+            var updatedPost = TestDataLoader.Posts.UpdatedPost;
             var response = ApiClient.Put<Post>("/posts/1", updatedPost);
 
             response.StatusCode.Should().Be(HttpStatusCode.OK,

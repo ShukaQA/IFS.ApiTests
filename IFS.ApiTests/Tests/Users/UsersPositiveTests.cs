@@ -3,6 +3,7 @@ using Allure.NUnit.Attributes;
 using FluentAssertions;
 using IFS.ApiTests.Helpers;
 using IFS.ApiTests.Models;
+using IFS.ApiTests.TestData;
 using NUnit.Framework;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -60,9 +61,7 @@ namespace IFS.ApiTests.Tests.Users
             }
         }
 
-        [TestCase(1)]
-        [TestCase(5)]
-        [TestCase(10)]
+        [TestCaseSource(typeof(TestDataLoader.Users), nameof(TestDataLoader.Users.ValidUserIds))]
         [AllureTag("regression")]
         [AllureSeverity(SeverityLevel.critical)]
         [AllureDescription("Verify valid user IDs return correct user")]
