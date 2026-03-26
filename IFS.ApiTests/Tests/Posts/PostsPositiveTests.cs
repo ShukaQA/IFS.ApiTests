@@ -1,5 +1,5 @@
-﻿using Allure.NUnit.Attributes;
-using Allure.Net.Commons;
+﻿using Allure.Net.Commons;
+using Allure.NUnit.Attributes;
 using FluentAssertions;
 using IFS.ApiTests.Helpers;
 using IFS.ApiTests.Models;
@@ -8,18 +8,16 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Net;
 
-namespace IFS.ApiTests.Tests
+namespace IFS.ApiTests.Tests.Posts
 {
     [TestFixture]
     [AllureSuite("Posts API")]
-    public class PostsTests : BaseTest
+    [AllureFeature("Positive Tests")]
+    public class PostsPositiveTests : BaseTest
     {
-        private const int MaxResponseTimeMs = 3000;
-
         [Test]
         [AllureTag("smoke")]
         [AllureSeverity(SeverityLevel.critical)]
-        [AllureFeature("GET /posts")]
         [AllureDescription("Verify GET /posts returns 200 OK")]
         public void GetAllPosts_ShouldReturn200OK()
         {
@@ -32,7 +30,6 @@ namespace IFS.ApiTests.Tests
         [Test]
         [AllureTag("regression")]
         [AllureSeverity(SeverityLevel.normal)]
-        [AllureFeature("GET /posts")]
         [AllureDescription("Verify GET /posts returns exactly 100 posts")]
         public void GetAllPosts_ShouldReturn100Posts()
         {
@@ -46,7 +43,6 @@ namespace IFS.ApiTests.Tests
         [Test]
         [AllureTag("regression")]
         [AllureSeverity(SeverityLevel.normal)]
-        [AllureFeature("GET /posts")]
         [AllureDescription("Verify each post has id, userId, title and body fields")]
         public void GetAllPosts_EachPost_ShouldHaveRequiredFields()
         {
@@ -67,8 +63,7 @@ namespace IFS.ApiTests.Tests
         [Test]
         [AllureTag("performance")]
         [AllureSeverity(SeverityLevel.minor)]
-        [AllureFeature("GET /posts")]
-        [AllureDescription("Verify GET /posts responds within 3 seconds")]
+        [AllureDescription("Verify GET /posts responds within time limit")]
         public void GetAllPosts_ShouldRespondWithinTimeLimit()
         {
             var stopwatch = Stopwatch.StartNew();
@@ -85,9 +80,8 @@ namespace IFS.ApiTests.Tests
         [TestCase(100)]
         [AllureTag("regression")]
         [AllureSeverity(SeverityLevel.critical)]
-        [AllureFeature("GET /posts/{id}")]
-        [AllureDescription("Verify valid post IDs return 200 OK")]
-        public void GetPostById_ValidId_ShouldReturn200(int postId)
+        [AllureDescription("Verify valid post IDs return 200 OK with correct data")]
+        public void GetPostById_ValidId_ShouldReturn200WithCorrectData(int postId)
         {
             var response = ApiClient.Get<Post>($"/posts/{postId}");
 
@@ -98,25 +92,9 @@ namespace IFS.ApiTests.Tests
                 $"response should return post with Id {postId}");
         }
 
-        [TestCase(0)]
-        [TestCase(-1)]
-        [TestCase(99999)]
-        [AllureTag("regression")]
-        [AllureSeverity(SeverityLevel.normal)]
-        [AllureFeature("GET /posts/{id}")]
-        [AllureDescription("Verify invalid post IDs return 404 Not Found")]
-        public void GetPostById_InvalidId_ShouldReturn404(int postId)
-        {
-            var response = ApiClient.Get<Post>($"/posts/{postId}");
-
-            response.StatusCode.Should().Be(HttpStatusCode.NotFound,
-                $"GET /posts/{postId} should return 404 for non-existent post");
-        }
-
         [Test]
         [AllureTag("smoke")]
         [AllureSeverity(SeverityLevel.critical)]
-        [AllureFeature("POST /posts")]
         [AllureDescription("Verify creating a post returns 201 Created")]
         public void CreatePost_ShouldReturn201Created()
         {
@@ -131,7 +109,6 @@ namespace IFS.ApiTests.Tests
         [Test]
         [AllureTag("regression")]
         [AllureSeverity(SeverityLevel.normal)]
-        [AllureFeature("POST /posts")]
         [AllureDescription("Verify response body contains submitted data")]
         public void CreatePost_ResponseBody_ShouldContainSubmittedData()
         {
@@ -153,7 +130,6 @@ namespace IFS.ApiTests.Tests
         [Test]
         [AllureTag("regression")]
         [AllureSeverity(SeverityLevel.normal)]
-        [AllureFeature("PUT /posts/{id}")]
         [AllureDescription("Verify updating a post returns 200 and reflects changes")]
         public void UpdatePost_ShouldReturn200AndReflectChanges()
         {
@@ -178,7 +154,6 @@ namespace IFS.ApiTests.Tests
         [Test]
         [AllureTag("smoke")]
         [AllureSeverity(SeverityLevel.critical)]
-        [AllureFeature("DELETE /posts/{id}")]
         [AllureDescription("Verify deleting a post returns 200 OK")]
         public void DeletePost_ShouldReturn200OK()
         {
@@ -191,7 +166,6 @@ namespace IFS.ApiTests.Tests
         [Test]
         [AllureTag("regression")]
         [AllureSeverity(SeverityLevel.minor)]
-        [AllureFeature("Nested Resources")]
         [AllureDescription("Verify GET /posts/1/comments returns comments")]
         public void GetPostComments_ShouldReturnCommentsForPost()
         {

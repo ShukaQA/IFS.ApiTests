@@ -1,5 +1,5 @@
-﻿using Allure.NUnit.Attributes;
-using Allure.Net.Commons;
+﻿using Allure.Net.Commons;
+using Allure.NUnit.Attributes;
 using FluentAssertions;
 using IFS.ApiTests.Helpers;
 using IFS.ApiTests.Models;
@@ -8,18 +8,16 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Net;
 
-namespace IFS.ApiTests.Tests
+namespace IFS.ApiTests.Tests.Users
 {
     [TestFixture]
     [AllureSuite("Users API")]
-    public class UsersTests : BaseTest
+    [AllureFeature("Positive Tests")]
+    public class UsersPositiveTests : BaseTest
     {
-        private const int MaxResponseTimeMs = 3000;
-
         [Test]
         [AllureTag("smoke")]
         [AllureSeverity(SeverityLevel.critical)]
-        [AllureFeature("GET /users")]
         [AllureDescription("Verify GET /users returns 200 OK")]
         public void GetAllUsers_ShouldReturn200OK()
         {
@@ -32,7 +30,6 @@ namespace IFS.ApiTests.Tests
         [Test]
         [AllureTag("regression")]
         [AllureSeverity(SeverityLevel.normal)]
-        [AllureFeature("GET /users")]
         [AllureDescription("Verify GET /users returns exactly 10 users")]
         public void GetAllUsers_ShouldReturn10Users()
         {
@@ -46,7 +43,6 @@ namespace IFS.ApiTests.Tests
         [Test]
         [AllureTag("regression")]
         [AllureSeverity(SeverityLevel.normal)]
-        [AllureFeature("GET /users")]
         [AllureDescription("Verify each user has required fields")]
         public void GetAllUsers_EachUser_ShouldHaveRequiredFields()
         {
@@ -69,7 +65,6 @@ namespace IFS.ApiTests.Tests
         [TestCase(10)]
         [AllureTag("regression")]
         [AllureSeverity(SeverityLevel.critical)]
-        [AllureFeature("GET /users/{id}")]
         [AllureDescription("Verify valid user IDs return correct user")]
         public void GetUserById_ValidId_ShouldReturnCorrectUser(int userId)
         {
@@ -83,23 +78,9 @@ namespace IFS.ApiTests.Tests
         }
 
         [Test]
-        [AllureTag("regression")]
-        [AllureSeverity(SeverityLevel.normal)]
-        [AllureFeature("GET /users/{id}")]
-        [AllureDescription("Verify non-existent user ID returns 404")]
-        public void GetUserById_NonExistentId_ShouldReturn404()
-        {
-            var response = ApiClient.Get<User>("/users/99999");
-
-            response.StatusCode.Should().Be(HttpStatusCode.NotFound,
-                "non-existent user should return 404");
-        }
-
-        [Test]
         [AllureTag("performance")]
         [AllureSeverity(SeverityLevel.minor)]
-        [AllureFeature("GET /users")]
-        [AllureDescription("Verify GET /users responds within 3 seconds")]
+        [AllureDescription("Verify GET /users responds within time limit")]
         public void GetAllUsers_ShouldRespondWithinTimeLimit()
         {
             var stopwatch = Stopwatch.StartNew();
@@ -114,7 +95,6 @@ namespace IFS.ApiTests.Tests
         [Test]
         [AllureTag("regression")]
         [AllureSeverity(SeverityLevel.minor)]
-        [AllureFeature("Nested Resources")]
         [AllureDescription("Verify GET /users/1/posts returns posts for user")]
         public void GetUserPosts_ShouldReturnPostsForUser()
         {
