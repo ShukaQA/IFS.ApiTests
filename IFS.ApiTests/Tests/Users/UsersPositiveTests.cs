@@ -3,7 +3,6 @@ using Allure.NUnit.Attributes;
 using FluentAssertions;
 using IFS.ApiTests.Helpers;
 using IFS.ApiTests.Models;
-using IFS.ApiTests.TestData;
 using NUnit.Framework;
 using System.Collections.Generic;
 using System.Diagnostics;
