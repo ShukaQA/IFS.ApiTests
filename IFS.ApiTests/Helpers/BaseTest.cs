@@ -16,14 +16,19 @@ namespace IFS.ApiTests.Helpers
         {
             ApiClient = new ApiClient();
 
+            var environment = Environment.GetEnvironmentVariable("TEST_ENV") ?? "dev";
+
             var config = new ConfigurationBuilder()
                 .AddJsonFile("appsettings.json")
+                .AddJsonFile($"appsettings.{environment}.json", optional: true)
                 .Build();
 
             MaxResponseTimeMs = int.Parse(
                 config["TestSettings:MaxResponseTimeMs"] ?? "3000");
 
-            Console.WriteLine($"\n>>> Starting test: {TestContext.CurrentContext.Test.Name}");
+            Console.WriteLine($"\n>>> Starting test : {TestContext.CurrentContext.Test.Name}");
+            Console.WriteLine($">>> Environment   : {environment.ToUpper()}");
+            Console.WriteLine($">>> Max Response  : {MaxResponseTimeMs}ms");
         }
 
         [TearDown]

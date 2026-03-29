@@ -104,5 +104,8 @@ namespace IFS.ApiTests.Tests.Users
             response.Data!.Should().NotBeEmpty(
                 "user 1 should have at least one post");
         }
+
+
     }
+
 }

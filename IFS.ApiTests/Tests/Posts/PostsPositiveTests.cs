@@ -165,5 +165,20 @@ namespace IFS.ApiTests.Tests.Posts
             response.Data.Should().NotBeEmpty(
                 "post 1 should have at least one comment");
         }
+
+        [Test]
+        [AllureTag("regression")]
+        [AllureSeverity(SeverityLevel.minor)]
+        [AllureDescription("Verify GET /posts/1/comments returns comments")]
+        public void GetPosts_FilteredByUserId_ShouldReturnOnlyMatchingPosts()
+        {
+            var userId = 1;
+            var response = ApiClient.Get<List<Post>>($"/posts?userId={userId}");
+
+            response.StatusCode.Should().Be(HttpStatusCode.OK);
+            response.Data.Should().NotBeNull();
+            response.Data.Should().NotBeEmpty();
+            response.Data.Should().OnlyContain(p => p.UserId == userId);
+        }
     }
 }
