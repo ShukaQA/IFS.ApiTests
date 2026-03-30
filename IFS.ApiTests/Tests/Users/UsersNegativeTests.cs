@@ -14,18 +14,6 @@ namespace IFS.ApiTests.Tests.Users
     [AllureFeature("Negative Tests")]
     public class UsersNegativeTests : BaseTest
     {
-        [Test]
-        [AllureTag("negative")]
-        [AllureSeverity(SeverityLevel.normal)]
-        [AllureDescription("Verify non-existent user ID returns 404")]
-        public void GetUserById_NonExistentId_ShouldReturn404()
-        {
-            var response = ApiClient.Get<User>("/users/99999");
-
-            response.StatusCode.Should().Be(HttpStatusCode.NotFound,
-                "non-existent user should return 404");
-        }
-
         [TestCaseSource(typeof(TestDataLoader.Users), nameof(TestDataLoader.Users.InvalidUserIds))]
         [AllureTag("negative")]
         [AllureSeverity(SeverityLevel.normal)]
@@ -38,21 +26,17 @@ namespace IFS.ApiTests.Tests.Users
                 $"GET /users/{userId} should return 404 for invalid user");
         }
 
-        [Test]
+        [TestCaseSource(typeof(TestDataLoader.Users), nameof(TestDataLoader.Users.InvalidUserIds))]
         [AllureTag("negative")]
-        [AllureSeverity(SeverityLevel.minor)]
-        [AllureDescription("Verify GET /users/99999/posts returns empty or 404")]
-        public void GetUserPosts_NonExistentUser_ShouldReturnEmptyOrNotFound()
+        [AllureSeverity(SeverityLevel.normal)]
+        [AllureDescription("Verify non-existent user ID returns 404")]
+        public void GetUserById_NonExistentId_ShouldReturn404(int userId)
         {
-            var response = ApiClient.Get<List<dynamic>>("/users/99999/posts");
+            var response = ApiClient.Get<User>($"/users/{userId}");
 
-            var isEmptyOrNotFound =
-                response.StatusCode == HttpStatusCode.NotFound ||
-                (response.StatusCode == HttpStatusCode.OK &&
-                (response.Data == null || response.Data.Count == 0));
-
-            isEmptyOrNotFound.Should().BeTrue(
-                "non-existent user should return 404 or empty posts list");
+            response.StatusCode.Should().Be(HttpStatusCode.NotFound,
+                "non-existent user should return 404");
         }
+
     }
 }
